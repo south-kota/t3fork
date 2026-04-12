@@ -700,6 +700,7 @@ export default function ChatView(props: ChatViewProps) {
   const attachmentPreviewHandoffByMessageIdRef = useRef<Record<string, string[]>>({});
   const attachmentPreviewPromotionInFlightByMessageIdRef = useRef<Record<string, true>>({});
   const sendInFlightRef = useRef(false);
+  const pendingSendScrollFrameRef = useRef<number | null>(null);
   const terminalOpenByThreadRef = useRef<Record<string, boolean>>({});
 
   const terminalState = useTerminalStateStore((state) =>
@@ -1176,6 +1177,13 @@ export default function ChatView(props: ChatViewProps) {
       }
     };
   }, [clearAttachmentPreviewHandoffs]);
+  useEffect(() => {
+    return () => {
+      if (pendingSendScrollFrameRef.current != null) {
+        cancelAnimationFrame(pendingSendScrollFrameRef.current);
+      }
+    };
+  }, []);
   const handoffAttachmentPreviews = useCallback((messageId: MessageId, previewUrls: string[]) => {
     if (previewUrls.length === 0) return;
 
@@ -2423,7 +2431,11 @@ export default function ChatView(props: ChatViewProps) {
     ]);
     // Sending a message should always bring the latest user turn into view.
     isAtEndRef.current = true;
-    requestAnimationFrame(() => {
+    if (pendingSendScrollFrameRef.current != null) {
+      cancelAnimationFrame(pendingSendScrollFrameRef.current);
+    }
+    pendingSendScrollFrameRef.current = requestAnimationFrame(() => {
+      pendingSendScrollFrameRef.current = null;
       legendListRef.current?.scrollToEnd?.({ animated: true });
       setShowScrollToBottom(false);
     });
@@ -2818,7 +2830,11 @@ export default function ChatView(props: ChatViewProps) {
         },
       ]);
       isAtEndRef.current = true;
-      requestAnimationFrame(() => {
+      if (pendingSendScrollFrameRef.current != null) {
+        cancelAnimationFrame(pendingSendScrollFrameRef.current);
+      }
+      pendingSendScrollFrameRef.current = requestAnimationFrame(() => {
+        pendingSendScrollFrameRef.current = null;
         legendListRef.current?.scrollToEnd?.({ animated: true });
         setShowScrollToBottom(false);
       });
