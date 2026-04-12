@@ -1964,17 +1964,6 @@ export default function ChatView(props: ChatViewProps) {
     isAtEndRef.current = isAtEnd;
     setShowScrollToBottom(!isAtEnd);
   }, []);
-  useLayoutEffect(() => {
-    if (!activeThread?.id) return;
-    isAtEndRef.current = true;
-    // Give LegendList a frame to mount/layout before scrolling.
-    const timeout = window.setTimeout(() => {
-      legendListRef.current?.scrollToEnd?.({ animated: false });
-    }, 50);
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, [activeThread?.id]);
 
   useEffect(() => {
     setExpandedWorkGroups({});
@@ -2898,7 +2887,6 @@ export default function ChatView(props: ChatViewProps) {
       activeThread,
       activeProposedPlan,
       beginLocalDispatch,
-      scrollToEnd,
       isConnecting,
       isSendBusy,
       isServerThread,
