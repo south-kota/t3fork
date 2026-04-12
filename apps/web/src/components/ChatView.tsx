@@ -2435,7 +2435,7 @@ export default function ChatView(props: ChatViewProps) {
     // Sending a message should always bring the latest user turn into view.
     isAtEndRef.current = true;
     requestAnimationFrame(() => {
-      legendListRef.current?.scrollToEnd?.({ animated: true });
+      scrollToEnd(true);
       setShowScrollToBottom(false);
     });
 
@@ -2830,7 +2830,7 @@ export default function ChatView(props: ChatViewProps) {
       ]);
       isAtEndRef.current = true;
       requestAnimationFrame(() => {
-        legendListRef.current?.scrollToEnd?.({ animated: true });
+        scrollToEnd(true);
         setShowScrollToBottom(false);
       });
 
