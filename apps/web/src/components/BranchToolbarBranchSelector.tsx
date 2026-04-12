@@ -427,8 +427,7 @@ export function BranchToolbarBranchSelector({
   }, [fetchNextPage, hasNextPage, isBranchMenuOpen, isFetchingNextPage]);
   const branchListRef = useRef<LegendListRef | null>(null);
   const setBranchListRef = useCallback((element: HTMLDivElement | null) => {
-    branchListScrollElementRef.current =
-      (element?.parentElement as HTMLDivElement | null) ?? null;
+    branchListScrollElementRef.current = (element?.parentElement as HTMLDivElement | null) ?? null;
   }, []);
 
   useEffect(() => {
@@ -436,9 +435,12 @@ export function BranchToolbarBranchSelector({
       return;
     }
 
-    branchListScrollElementRef.current?.scrollTo({ top: 0 });
-    branchListRef.current?.scrollToOffset?.({ offset: 0, animated: false });
-  }, [deferredTrimmedBranchQuery, isBranchMenuOpen]);
+    if (shouldVirtualizeBranchList) {
+      branchListRef.current?.scrollToOffset?.({ offset: 0, animated: false });
+    } else {
+      branchListScrollElementRef.current?.scrollTo({ top: 0 });
+    }
+  }, [deferredTrimmedBranchQuery, isBranchMenuOpen, shouldVirtualizeBranchList]);
 
   useEffect(() => {
     const scrollElement = branchListScrollElementRef.current;
@@ -594,8 +596,9 @@ export function BranchToolbarBranchSelector({
           </ComboboxListVirtualized>
         ) : (
           <ComboboxList ref={setBranchListRef} className="max-h-56">
-            {filteredBranchPickerItems.map((itemValue, index) => renderPickerItem(itemValue, index))
-            }
+            {filteredBranchPickerItems.map((itemValue, index) =>
+              renderPickerItem(itemValue, index),
+            )}
           </ComboboxList>
         )}
         {branchStatusText ? <ComboboxStatus>{branchStatusText}</ComboboxStatus> : null}

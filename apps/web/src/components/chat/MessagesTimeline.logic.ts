@@ -172,4 +172,3 @@ export function deriveMessagesTimelineRows(input: {
 
   return nextRows;
 }
-
