@@ -554,8 +554,8 @@ export function resolveMockUpdateServerUrl(mockUpdateServerPort: number | undefi
 
 export function resolveDesktopProductName(version: string): string {
   return resolveDesktopUpdateChannel(version) === "nightly"
-    ? "T3 Code (Nightly)"
-    : (desktopPackageJson.productName ?? "T3 Code");
+    ? "T3 Fork (Nightly)"
+    : (desktopPackageJson.productName ?? "T3 Fork");
 }
 
 const createBuildConfig = Effect.fn("createBuildConfig")(function* (
@@ -567,9 +567,9 @@ const createBuildConfig = Effect.fn("createBuildConfig")(function* (
   mockUpdateServerPort: number | undefined,
 ) {
   const buildConfig: Record<string, unknown> = {
-    appId: "com.t3tools.t3code",
+    appId: "com.southkota.t3fork",
     productName: resolveDesktopProductName(version),
-    artifactName: "T3-Code-${version}-${arch}.${ext}",
+    artifactName: "T3-Fork-${version}-${arch}.${ext}",
     directories: {
       buildResources: "apps/desktop/resources",
     },
